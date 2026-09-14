@@ -1,0 +1,10 @@
+# Sensitive / local-only env files
+.env
+.env.local
+_Infra/.env
+
+# pgAdmin runtime data (db, sessions, storage)
+_Infra/pgadmin/
+
+# OS junk
+.DS_Store
