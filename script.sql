@@ -41,6 +41,7 @@ CREATE TABLE parameters (
         AND 150
     )
 );
+-- wind_speed и bullet_drift не заполняются одновременно: ДМК -> ветер, ВР -> снос пули
 CREATE TABLE logs (
     id integer PRIMARY KEY,
     user_id integer NOT NULL,
@@ -108,3 +109,28 @@ VALUES
     (2, 2, 2, 1),
     (3, 3, 3, 2),
     (4, 4, 4, 2);
+-- Комментарии к схеме (COMMENT ON)
+COMMENT ON TABLE ranks IS 'Воинские звания пользователей';
+COMMENT ON TABLE users IS 'Пользователи';
+COMMENT ON TABLE equipment_types IS 'Типы оборудования для измерения(ДМК, ВР)';
+COMMENT ON TABLE parameters IS 'Параметры замера';
+COMMENT ON TABLE logs IS 'Журнал измерений';
+
+COMMENT ON COLUMN ranks.name IS 'Наименование звания';
+
+COMMENT ON COLUMN users.name IS 'ФИО пользователя';
+COMMENT ON COLUMN users.rank_id IS 'Ссылка на звание';
+
+COMMENT ON COLUMN equipment_types.name IS 'Название типа оборудования';
+
+COMMENT ON COLUMN parameters.station_high IS 'Высота метеостанции, м';
+COMMENT ON COLUMN parameters.temperature IS 'Температура воздуха, °C';
+COMMENT ON COLUMN parameters.pressure IS 'Атмосферное давление, мм рт. ст.';
+COMMENT ON COLUMN parameters.wind_direction IS 'Направление ветра (деления угломера, 0-59)';
+COMMENT ON COLUMN parameters.wind_speed IS 'Скорость ветра, м/с';
+COMMENT ON COLUMN parameters.bullet_drift IS 'Снос пули, тыс.';
+
+COMMENT ON COLUMN logs.user_id IS 'Ссылка на пользователя';
+COMMENT ON COLUMN logs.equipment_id IS 'Ссылка на тип оборудования';
+COMMENT ON COLUMN logs.parameter_id IS 'Ссылка на параметры замера';
+COMMENT ON COLUMN logs.measure_date IS 'Дата и время измерения';
