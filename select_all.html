@@ -2,11 +2,29 @@
 <html>
 <head>
 <meta charset="UTF-8"/><style>
-table {border: medium solid #6495ed;border-collapse: collapse;width: 100%;} th{font-family: monospace;border: thin solid #6495ed;padding: 5px;background-color: #D0E3FA;}th{text-align: left;}td{font-family: sans-serif;border: thin solid #6495ed;padding: 5px;text-align: center;}.odd{background:#e8edff;}img{padding:5px; border:solid; border-color: #dddddd #aaaaaa #aaaaaa #dddddd; border-width: 1px 2px 2px 1px; background-color:white;}</style>
+table {border: medium solid #6495ed;border-collapse: collapse;width: 100%;} th{font-family: monospace;border: thin solid #6495ed;padding: 5px;background-color: #D0E3FA;}th{text-align: left;}td{font-family: sans-serif;border: thin solid #6495ed;padding: 5px;text-align: center;}.odd{background:#e8edff;}img{padding:5px; border:solid; border-color: #dddddd #aaaaaa #aaaaaa #dddddd; border-width: 1px 2px 2px 1px; background-color:white;}
+</style>
 </head>
 <body>
-<table><tr><th colspan="11"><pre><code>-- SELECT: объединение всех 5 таблиц<br><br>SELECT<br>    l.id AS log_id,<br>    l.measure_date,<br>    u.name AS user_name,<br>    r.name AS rank_name,<br>    e.name AS equipment_name,<br>    p.station_high,<br>    p.temperature,<br>    p.pressure,<br>    p.wind_direction,<br>    p.wind_speed,<br>    p.bullet_drift<br>FROM<br>    logs l<br>    INNER JOIN users u ON u.id = l.user_id<br>    INNER JOIN ranks r ON r.id = u.rank_id<br>    INNER JOIN equipment_types e ON e.id = l.equipment_id<br>    INNER JOIN parameters p ON p.id = l.parameter_id<br>ORDER BY<br>    l.id</code></pre></th></tr><tr><th>log_id</th><th>measure_date</th><th>user_name</th><th>rank_name</th><th>equipment_name</th><th>station_high</th><th>temperature</th><th>pressure</th><th>wind_direction</th><th>wind_speed</th><th>bullet_drift</th></tr><tr class="odd"><td>1</td><td>2026-09-20 18:31:44.799</td><td>Волков Дмитрий Андреевич</td><td>Рядовой</td><td>ДМК</td><td>150</td><td>30.4</td><td>700</td><td>15</td><td>12</td><td>&nbsp;</td></tr>
-<tr><td>2</td><td>2026-09-20 18:31:44.799</td><td>Кузнецова Елена Игоревна</td><td>Младший сержант</td><td>ДМК</td><td>160</td><td>25.4</td><td>654</td><td>12</td><td>9</td><td>&nbsp;</td></tr>
-<tr class="odd"><td>3</td><td>2026-09-20 18:31:44.799</td><td>Смирнов Максим Витальевич</td><td>Ефрейтор</td><td>ВР</td><td>50</td><td>3.4</td><td>720</td><td>2</td><td>&nbsp;</td><td>25</td></tr>
-<tr><td>4</td><td>2026-09-20 18:31:44.799</td><td>Морозова Анна Дмитриевна</td><td>Старшина</td><td>ВР</td><td>60</td><td>2.4</td><td>554</td><td>5</td><td>&nbsp;</td><td>30</td></tr>
+<table><tr><th colspan="5"><pre><code>-- Основной запрос: журнал измерений, одна строка = одно измерение<br>-- ANSI-92<br><br>SELECT<br>    l.measure_date AS &quot;Дата измерения&quot;,<br>    l.id AS &quot;Номер пачки&quot;,<br>    u.name AS &quot;ФИО сотрудника&quot;,<br>    pt.name || &#x27; (&#x27; || un.name || &#x27;)&#x27; AS &quot;Наименование параметра и ед. измерения&quot;,<br>    p.value AS &quot;Значение&quot;<br>FROM<br>    logs l<br>    INNER JOIN users u ON u.id = l.user_id<br>    INNER JOIN parameters p ON p.log_id = l.id<br>    INNER JOIN parameter_types pt ON pt.id = p.parameter_type_id<br>    INNER JOIN units un ON un.id = p.unit_id<br>ORDER BY<br>    l.id,<br>    pt.id;</code></pre></th></tr><tr><th>Дата измерения</th><th>Номер пачки</th><th>ФИО сотрудника</th><th>Наименование параметра и ед. измер</th><th>Значение</th></tr>
+<tr class="odd"><td>2026-09-25 09:30:00</td><td>1</td><td>Волков Дмитрий Андреевич</td><td>Высота метеопоста (Метр)</td><td>150.0</td></tr>
+<tr><td>2026-09-25 09:30:00</td><td>1</td><td>Волков Дмитрий Андреевич</td><td>Температура воздуха (Градус Цельсия)</td><td>30.4</td></tr>
+<tr class="odd"><td>2026-09-25 09:30:00</td><td>1</td><td>Волков Дмитрий Андреевич</td><td>Атмосферное давление (Миллиметр ртутного столба)</td><td>700.0</td></tr>
+<tr><td>2026-09-25 09:30:00</td><td>1</td><td>Волков Дмитрий Андреевич</td><td>Направление ветра (Деление угломера (десятисектор))</td><td>15.0</td></tr>
+<tr class="odd"><td>2026-09-25 09:30:00</td><td>1</td><td>Волков Дмитрий Андреевич</td><td>Скорость ветра (Метр в секунду)</td><td>12.0</td></tr>
+<tr><td>2026-09-25 10:15:00</td><td>2</td><td>Кузнецова Елена Игоревна</td><td>Высота метеопоста (Метр)</td><td>160.0</td></tr>
+<tr class="odd"><td>2026-09-25 10:15:00</td><td>2</td><td>Кузнецова Елена Игоревна</td><td>Температура воздуха (Градус Цельсия)</td><td>25.4</td></tr>
+<tr><td>2026-09-25 10:15:00</td><td>2</td><td>Кузнецова Елена Игоревна</td><td>Атмосферное давление (Миллиметр ртутного столба)</td><td>654.0</td></tr>
+<tr class="odd"><td>2026-09-25 10:15:00</td><td>2</td><td>Кузнецова Елена Игоревна</td><td>Направление ветра (Деление угломера (десятисектор))</td><td>12.0</td></tr>
+<tr><td>2026-09-25 10:15:00</td><td>2</td><td>Кузнецова Елена Игоревна</td><td>Скорость ветра (Метр в секунду)</td><td>9.0</td></tr>
+<tr class="odd"><td>2026-09-26 08:05:00</td><td>3</td><td>Смирнов Максим Витальевич</td><td>Высота метеопоста (Метр)</td><td>50.0</td></tr>
+<tr><td>2026-09-26 08:05:00</td><td>3</td><td>Смирнов Максим Витальевич</td><td>Температура воздуха (Градус Цельсия)</td><td>3.4</td></tr>
+<tr class="odd"><td>2026-09-26 08:05:00</td><td>3</td><td>Смирнов Максим Витальевич</td><td>Атмосферное давление (Миллиметр ртутного столба)</td><td>720.0</td></tr>
+<tr><td>2026-09-26 08:05:00</td><td>3</td><td>Смирнов Максим Витальевич</td><td>Направление ветра (Деление угломера (десятисектор))</td><td>2.0</td></tr>
+<tr class="odd"><td>2026-09-26 08:05:00</td><td>3</td><td>Смирнов Максим Витальевич</td><td>Дальность сноса пули (Метр)</td><td>25.0</td></tr>
+<tr><td>2026-09-26 08:40:00</td><td>4</td><td>Морозова Анна Дмитриевна</td><td>Высота метеопоста (Метр)</td><td>60.0</td></tr>
+<tr class="odd"><td>2026-09-26 08:40:00</td><td>4</td><td>Морозова Анна Дмитриевна</td><td>Температура воздуха (Градус Цельсия)</td><td>2.4</td></tr>
+<tr><td>2026-09-26 08:40:00</td><td>4</td><td>Морозова Анна Дмитриевна</td><td>Атмосферное давление (Миллиметр ртутного столба)</td><td>554.0</td></tr>
+<tr class="odd"><td>2026-09-26 08:40:00</td><td>4</td><td>Морозова Анна Дмитриевна</td><td>Направление ветра (Деление угломера (десятисектор))</td><td>5.0</td></tr>
+<tr><td>2026-09-26 08:40:00</td><td>4</td><td>Морозова Анна Дмитриевна</td><td>Дальность сноса пули (Метр)</td><td>30.0</td></tr>
 </table></body></html>
