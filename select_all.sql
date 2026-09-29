@@ -1,22 +1,18 @@
--- SELECT: объединение всех 5 таблиц
+-- Основной запрос: журнал измерений, одна строка = одно измерение
+-- ANSI-92
 
 SELECT
-    l.id AS log_id,
-    l.measure_date,
-    u.name AS user_name,
-    r.name AS rank_name,
-    e.name AS equipment_name,
-    p.station_high,
-    p.temperature,
-    p.pressure,
-    p.wind_direction,
-    p.wind_speed,
-    p.bullet_drift
+    l.measure_date AS "Дата измерения",
+    l.id AS "Номер пачки",
+    u.name AS "ФИО сотрудника",
+    pt.name || ' (' || un.name || ')' AS "Наименование параметра и ед. измерения",
+    p.value AS "Значение"
 FROM
     logs l
     INNER JOIN users u ON u.id = l.user_id
-    INNER JOIN ranks r ON r.id = u.rank_id
-    INNER JOIN equipment_types e ON e.id = l.equipment_id
-    INNER JOIN parameters p ON p.id = l.parameter_id
+    INNER JOIN parameters p ON p.log_id = l.id
+    INNER JOIN parameter_types pt ON pt.id = p.parameter_type_id
+    INNER JOIN units un ON un.id = p.unit_id
 ORDER BY
-    l.id;
+    l.id,
+    pt.id;
