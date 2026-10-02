@@ -1,10 +1,10 @@
 # Sensitive / local-only env files
 .env
 .env.local
-_Infra/.env
+infra/.env
 
 # pgAdmin runtime data (db, sessions, storage)
-_Infra/pgadmin/
+infra/pgadmin/
 
 # Editor settings
 .vscode/
