@@ -72,10 +72,8 @@ BEGIN
 
     CREATE TABLE virtual_temperature_corrections (
         id integer NOT NULL DEFAULT nextval('virtual_temperature_corrections_seq') PRIMARY KEY,
-        temp_from numeric(4, 1),
-        temp_to numeric(4, 1) NOT NULL,
-        correction numeric(3, 1) NOT NULL,
-        description varchar(50) NOT NULL
+        temp numeric(4, 1) NOT NULL,
+        correction numeric(3, 1) NOT NULL
     );
 
     ALTER SEQUENCE base_units_seq OWNED BY base_units.id;
@@ -127,14 +125,15 @@ BEGIN
         ('Волков Дмитрий Андреевич', 1),
         ('Кузнецова Елена Игоревна', 2);
 
-    INSERT INTO virtual_temperature_corrections (temp_from, temp_to, correction, description) VALUES
-        (NULL,  0.0, 0.0, 'Ниже 0'),
-        (0.0,  5.0, 0.5, '0 - 5'),
-        (10.0, 15.0, 1.0, '10 - 15'),
-        (20.0, 20.0, 1.5, '20'),
-        (25.0, 25.0, 2.0, '25'),
-        (30.0, 30.0, 3.5, '30'),
-        (40.0, 40.0, 4.5, '40');
+    INSERT INTO virtual_temperature_corrections (temp, correction) VALUES
+        (0.0, 0.5),
+        (5.0, 0.5),
+        (10.0, 1.0),
+        (15.0, 1.0),
+        (20.0, 1.5),
+        (25.0, 2.0),
+        (30.0, 3.5),
+        (40.0, 4.5);
 
     INSERT INTO logs (user_id, equipment_id, measure_date) VALUES
         (1, 1, '2026-09-24 09:30:00+03'),
@@ -243,10 +242,8 @@ BEGIN
     COMMENT ON COLUMN parameters.value IS 'Измеренное значение';
 
     COMMENT ON COLUMN virtual_temperature_corrections.id IS 'Идентификатор записи поправки';
-    COMMENT ON COLUMN virtual_temperature_corrections.temp_from IS 'Нижняя граница диапазона температур';
-    COMMENT ON COLUMN virtual_temperature_corrections.temp_to IS 'Верхняя граница диапазона температур';
+    COMMENT ON COLUMN virtual_temperature_corrections.temp IS 'Диапазон температур';
     COMMENT ON COLUMN virtual_temperature_corrections.correction IS 'Величина виртуальной поправки';
-    COMMENT ON COLUMN virtual_temperature_corrections.description IS 'Обозначение диапазона из ТЗ';
 
     COMMIT;
 END $$;
