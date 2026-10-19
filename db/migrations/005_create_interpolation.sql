@@ -1,5 +1,27 @@
 DO $$
 BEGIN
+    -- 1. Исправление структуры и данных таблицы virtual_temperature_corrections
+    BEGIN
+        DELETE FROM virtual_temperature_corrections
+        WHERE temp_from IS NULL;
+
+        ALTER TABLE virtual_temperature_corrections
+            DROP COLUMN description;
+
+        INSERT INTO virtual_temperature_corrections (temp_to, correction)
+        SELECT temp_from, correction
+        FROM virtual_temperature_corrections
+        WHERE temp_from <> temp_to;
+
+        ALTER TABLE virtual_temperature_corrections
+            DROP COLUMN temp_from;
+
+        ALTER TABLE virtual_temperature_corrections
+            RENAME COLUMN temp_to TO temp;
+
+        COMMENT ON COLUMN virtual_temperature_corrections.temp IS 'Диапазон температур';
+    END;
+
     -- Создание типа данных для интерполяции (x0, y0, x1, y1)
     BEGIN
         CREATE TYPE interpolation_params AS (
